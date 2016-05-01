@@ -134,7 +134,7 @@ abstract public class Vektor implements Cloneable {
     }
 
     static public double multTwoDoubles(double d1, double d2) throws DoublesOutOfRangeException {
-        if (Math.abs(d2) > Math.abs(Double.MAX_VALUE / d1)) {
+        if ( (d1!=0) && Math.abs(d2) > Math.abs(Double.MAX_VALUE / d1)) {
             throw new DoublesOutOfRangeException("DOUBLES ARE TOO BIG");
         }
         if (d1*d2 == Double.NEGATIVE_INFINITY || d1*d2 == Double.POSITIVE_INFINITY) {
@@ -144,8 +144,8 @@ abstract public class Vektor implements Cloneable {
     }
 
     static public double divTwoDoubles(double d1, double d2) throws IllegalArgumentException {
-        if (d1 == 0 || d2 == 0) {
-            throw new IllegalArgumentException("ONE OF THE ARGUMENT IS 0");
+        if ( d2 == 0) {
+            throw new IllegalArgumentException("DIVISOR IS 0");
         } else if ((Math.abs(d2) < 1) && Math.abs(d1 / Double.MAX_VALUE) > Math.abs(d2)) {
             throw new IllegalArgumentException("DIVISOR IS TO SMALL (-1 < D < 1)");
         }

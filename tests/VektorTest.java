@@ -92,7 +92,7 @@ public class VektorTest {
     @Test
     public void div0DivisorDoublesException() throws IllegalArgumentException {
         dOutOfRange.expect(IllegalArgumentException.class);
-        dOutOfRange.expectMessage("ONE OF THE ARGUMENT IS 0");
+        dOutOfRange.expectMessage("DIVISOR IS 0");
         Vektor.divTwoDoubles(Double.MAX_VALUE, 0);
     }
 
