@@ -6,10 +6,10 @@ import objects.MovingObject;
 
 import static framentLoops.SwarmLayerLoop.MOUSE_AREA;
 
-public class EscapeTheMouse implements MouseListenerBehavior {
+public class AlignToTheMouseBehavior implements MouseListenerBehavior {
     SwarmLayerLoop layerLoop;
 
-    public EscapeTheMouse(SwarmLayerLoop layerLoop) {
+    public AlignToTheMouseBehavior(SwarmLayerLoop layerLoop) {
         this.layerLoop = layerLoop;
     }
 
@@ -20,7 +20,7 @@ public class EscapeTheMouse implements MouseListenerBehavior {
                     (coord.getY() < mo.getYPos() + MOUSE_AREA && coord.getY() > mo.getYPos() - MOUSE_AREA)) {
                 Vektor2D aligment = new Vektor2D(coord.getX(),coord.getY());
                 aligment.sub(mo.getPos());
-                aligment.mult(-10);
+                aligment.mult(10);
                 mo.getVelocity().add(aligment);
             }
         }

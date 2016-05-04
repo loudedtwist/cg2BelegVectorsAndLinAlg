@@ -22,6 +22,7 @@ public class SwarmLayerLoop implements LayerLoop {
     BasisWindow window;
     ArrayList<MovingGroup> swarms;
     MouseListenerBehavior leftButtonClickedMoving;
+    MouseListenerBehavior rightButtonClickedMoving;
 
     public ArrayList<MovingGroup> getSwarms() {
         return swarms;
@@ -48,22 +49,17 @@ public class SwarmLayerLoop implements LayerLoop {
             public void invoke(long window, double xpos, double ypos) {
                 ypos = MyWindow.WINDOW_HEIGHT - ypos ;
 
-                int state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
-                if (state == GLFW_PRESS) {
+                int leftButton = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
+                if (leftButton == GLFW_PRESS) {
                     if (leftButtonClickedMoving != null) {
                         leftButtonClickedMoving.mouseMovingWithButtonPressed(new Vektor2D(xpos,ypos));
                     }
-                    /*for (MovingObject mo : swarms.get(0).getSwarmAgents()) {
-                        if (
-                                (xpos < mo.getXPos() + MOUSE_AREA && xpos > mo.getXPos() - MOUSE_AREA) &&
-                                (ypos < mo.getYPos() + MOUSE_AREA && ypos > mo.getYPos() - MOUSE_AREA)
-                                ) {
-                            Vektor2D aligment = new Vektor2D(xpos,ypos);
-                            aligment.sub(mo.getPos());
-                            aligment.mult(10);
-                            mo.getVelocity().add(aligment);
-                        }
-                    }*/
+                }
+                int rightButton = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT);
+                if (rightButton == GLFW_PRESS) {
+                    if (leftButtonClickedMoving != null) {
+                        rightButtonClickedMoving.mouseMovingWithButtonPressed(new Vektor2D(xpos,ypos));
+                    }
                 }
             }
         });
@@ -88,6 +84,7 @@ public class SwarmLayerLoop implements LayerLoop {
         addObjectToScene(swarm);
 
         leftButtonClickedMoving = new EscapeTheMouse(this);
+        rightButtonClickedMoving = new AlignToTheMouseBehavior(this);
     }
 
     public void addObjectToScene(MovingGroup swarm) {
