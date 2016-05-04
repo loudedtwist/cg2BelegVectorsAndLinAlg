@@ -1,123 +1,316 @@
 package lwjgl;
 
-import framentLoops.FragmentLoop;
-import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.glfw.GLFWKeyCallback;
-import org.lwjgl.glfw.GLFWVidMode;
-import org.lwjgl.opengl.GL;
+import framentLoops.LayerLoop;
+import org.lwjgl.glfw.*;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.util.Calendar;
+
+import static java.lang.System.exit;
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL.createCapabilities;
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
-public class BasisWindow {
 
-    // The window handle
-    private long window;
+abstract public class BasisWindow {
 
-    private final String title ;
-    FragmentLoop fragmentLoop;
+    private long windowHandle;
+
+    LayerLoop layerLoop;
+
+    private final String title;
+
     private int width = 300;
     private int height = 300;
 
+    int shaderProgramm;
+    int vertexShader;
+    int fragmentShader;
+    String vertexShaderSource = "";
+    String fragmentShaderSource = "";
 
-    public BasisWindow(int width, int height, String title, FragmentLoop fragmentLoop) {
+    Calendar calendarFPS;
+    long next_game_tick;
+
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    final int FRAMES_PER_SECOND = 60;
+    final int SKIP_TICKS = 1000 / FRAMES_PER_SECOND;
+
+    public BasisWindow(int width, int height, String title) {
         this.height = height;
         this.width = width;
-        this.fragmentLoop = fragmentLoop;
         this.title = title;
     }
+
     public BasisWindow(int width, int height) {
-        this(width, height, "title", null);
+        this(width, height, "title");
     }
+
     public BasisWindow() {
-        this(null);
-    }
-    public BasisWindow(FragmentLoop fragmentLoop) {
-        this(300,300,"title", fragmentLoop);
+        this(300, 300, "title");
     }
 
-    public void setFragmentLoop(FragmentLoop drawer) {
-        this.fragmentLoop = drawer;
+    public void setLayerLoop(LayerLoop drawer) {
+        this.layerLoop = drawer;
     }
-
-    // We need to strongly reference callback instances.
 
     private GLFWErrorCallback errorCallback;
-    private GLFWKeyCallback   keyCallback;
+    private GLFWKeyCallback keyCallback;
+    private GLFWCursorPosCallback cursorPosCallback;
+    private GLFWMouseButtonCallback mouseButtonCallback;
 
     public void run() {
         try {
             init();
             loop();
-            // Release window and window callbacks
-            glfwDestroyWindow(window);
-            keyCallback.release();
+
+            releaseEventListeners();
+            glfwDestroyWindow(windowHandle);
         } finally {
-            // Terminate GLFW and release the GLFWErrorCallback
             glfwTerminate();
             errorCallback.release();
         }
     }
+
+    private void releaseEventListeners() {
+        if (mouseButtonCallback != null) {
+            mouseButtonCallback.release();
+        }
+        if (cursorPosCallback != null) {
+            cursorPosCallback.release();
+        }
+        if (keyCallback != null) {
+            keyCallback.release();
+        }
+    }
+
     private void init() {
         // Setup an error callback. The default implementation
         // will print the error message in System.err.
         glfwSetErrorCallback(errorCallback = GLFWErrorCallback.createPrint(System.err));
         // Initialize GLFW. Most GLFW functions will not work before doing this.
-        if ( glfwInit() != GLFW_TRUE )
+        if (glfwInit() != GLFW_TRUE)
             throw new IllegalStateException("Unable to initialize GLFW");
-        // Configure our window
-        glfwDefaultWindowHints(); // optional, the current window hints are already the default
-        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
-        // Create the window
-        window = glfwCreateWindow(width, height, title, NULL, NULL);
-        if ( window == NULL )
-            throw new RuntimeException("Failed to create the GLFW window");
+        // Configure our windowHandle
+        glfwDefaultWindowHints(); // optional, the current windowHandle hints are already the default
+        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the windowHandle will stay hidden after creation
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the windowHandle will be resizable
+        // Create the windowHandle
+        windowHandle = glfwCreateWindow(width, height, title, NULL, NULL);
+        if (windowHandle == NULL)
+            throw new RuntimeException("Failed to create the GLFW windowHandle");
+        System.out.println(windowHandle + " ");
         // Setup a key callback. It will be called every time a key is pressed, repeated or released.
-        glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
+        glfwSetKeyCallback(windowHandle, keyCallback = new GLFWKeyCallback() {
             @Override
             public void invoke(long window, int key, int scancode, int action, int mods) {
-                if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE )
+                if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
                     glfwSetWindowShouldClose(window, GLFW_TRUE); // We will detect this in our rendering loop
             }
         });
         // Get the resolution of the primary monitor
         GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        // Center our window
+        // Center our windowHandle
         glfwSetWindowPos(
-                window,
+                windowHandle,
                 (vidmode.width() - width) / 2,
                 (vidmode.height() - height) / 2
         );
         // Make the OpenGL context current
-        glfwMakeContextCurrent(window);
+        glfwMakeContextCurrent(windowHandle);
         // Enable v-sync
         glfwSwapInterval(1);
-        // Make the window visible
-        glfwShowWindow(window);
+        // Make the windowHandle visible
+        glfwShowWindow(windowHandle);
+
+        createCapabilities();
+        glClearColor(0.2f, 0.2f, 0.2f, 0.2f);
+
+        calendarFPS = Calendar.getInstance();
+        next_game_tick = calendarFPS.getTimeInMillis();
+
+        layerLoop.init();
     }
+
     private void loop() {
-        GL.createCapabilities();
-        // Set the clear color
-        glClearColor(0.3f, 0.3f, 0.3f, 0.3f);
-        // Run the rendering loop until the user has attempted to close
-            glMatrixMode(GL_PROJECTION);
-            glLoadIdentity(); // Resets any previous projection matrices
-            glOrtho(0, width, height, 0, 1, -1);
-            glMatrixMode(GL_MODELVIEW);
-        // the window or has pressed the ESCAPE key.
-        while ( glfwWindowShouldClose(window) == GLFW_FALSE ) {
-            //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
-            glClear(GL_COLOR_BUFFER_BIT);
 
-            if(fragmentLoop !=null)
-                fragmentLoop.loop();
 
-            glfwSwapBuffers(window); // swap the color buffers
+        loadShadersSource();
+        initShaders();
+
+        glOrtho(0.0, MyWindow.WINDOW_WIDTH, 0.0, MyWindow.WINDOW_HEIGHT, -1.0, 1.0);
+        while (glfwWindowShouldClose(windowHandle) == GLFW_FALSE) {
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            glUseProgram(shaderProgramm);
+
+            insideLoop();
+
+            sleepUntilNextGameTick(calendarFPS, next_game_tick);
+
+            glEnd();
+            glUseProgram(0);
+
+            glfwSwapBuffers(windowHandle);
             glfwPollEvents();
         }
+
+        destroyProgramAndShaders();
     }
-    public static void main(String[] args) {
-        new BasisWindow().run();
+
+    abstract public void insideLoop();
+
+    private void destroyProgramAndShaders() {
+        glDeleteProgram(shaderProgramm);
+        glDeleteShader(vertexShader);
+        glDeleteShader(fragmentShader);
     }
-} // source code from https://www.lwjgl.org/guide
+
+
+    public void loadShadersSource() {
+        try {
+            vertexShaderSource = readFileAsString("/Users/warik/IdeaProjects/cg2BelegVersion2/shaders/shader.vert");
+            fragmentShaderSource = readFileAsString("/Users/warik/IdeaProjects/cg2BelegVersion2/shaders/shader.frag");
+        } catch (Exception e) {
+            e.printStackTrace();
+            exit(0);
+        }
+    }
+
+    private void initShaders() {
+
+        shaderProgramm = glCreateProgram();
+        vertexShader = glCreateShader(GL_VERTEX_SHADER);
+        fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+
+        glShaderSource(vertexShader, vertexShaderSource);
+        glCompileShader(vertexShader);
+
+        if (glGetShaderi(vertexShader, GL_COMPILE_STATUS) == GL_FALSE)
+            throw new RuntimeException("Error creating vertex shader\n"
+                    + glGetShaderInfoLog(vertexShader, glGetShaderi(vertexShader, GL_INFO_LOG_LENGTH)));
+        glShaderSource(fragmentShader, fragmentShaderSource);
+        glCompileShader(fragmentShader);
+
+        if (glGetShaderi(fragmentShader, GL_COMPILE_STATUS) == GL_FALSE)
+            throw new RuntimeException("Error creating vertex shader\n"
+                    + glGetShaderInfoLog(fragmentShader, glGetShaderi(fragmentShader, GL_INFO_LOG_LENGTH)));
+
+        glAttachShader(shaderProgramm, vertexShader);
+        glAttachShader(shaderProgramm, fragmentShader);
+        glLinkProgram(shaderProgramm);
+        if (glGetProgrami(shaderProgramm, GL_LINK_STATUS) == GL_FALSE)
+            throw new RuntimeException("Unable to link shader program:");
+        glValidateProgram(shaderProgramm);
+    }
+
+    private void setMouseEvents() {
+        glfwSetMouseButtonCallback(windowHandle, mouseButtonCallback = new GLFWMouseButtonCallback() {
+            @Override
+            public void invoke(long window, int button, int action, int mods) {
+                System.out.println("BUTTON : " + button + "  ACTION " + action + "   MODS " + mods);
+            }
+
+        });
+        glfwSetCursorPosCallback(windowHandle, cursorPosCallback = new GLFWCursorPosCallback() {
+            @Override
+            public void invoke(long window, double xpos, double ypos) {
+                int state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
+                if (state == GLFW_PRESS) {
+                    //layerLoop.mouseMovingWithButtonPressed(new Vektor2D(xpos,ypos));
+                    System.out.println("X: " + xpos + "  Y: " + ypos);
+                }
+            }
+        });
+    }
+
+    private void sleepUntilNextGameTick(Calendar calendar, long next_game_tick) {
+        long sleep_time = 0;
+        next_game_tick += SKIP_TICKS;
+        sleep_time = next_game_tick - calendar.getTimeInMillis();
+        if (sleep_time >= 0) {
+            //System.out.println("going to sleep : "+sleep_time + "  msek");
+            try {
+                Thread.sleep(sleep_time);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private String readFileAsString(String filename) throws Exception {
+        StringBuilder source = new StringBuilder();
+
+        FileInputStream in = new FileInputStream(filename);
+
+        Exception exception = null;
+
+        BufferedReader reader;
+        try {
+            reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+
+            Exception innerExc = null;
+            try {
+                String line;
+                while ((line = reader.readLine()) != null)
+                    source.append(line).append('\n');
+            } catch (Exception exc) {
+                exception = exc;
+            } finally {
+                try {
+                    reader.close();
+                } catch (Exception exc) {
+                    if (innerExc == null)
+                        innerExc = exc;
+                    else
+                        exc.printStackTrace();
+                }
+            }
+
+            if (innerExc != null)
+                throw innerExc;
+        } catch (Exception exc) {
+            exception = exc;
+        } finally {
+            try {
+                in.close();
+            } catch (Exception exc) {
+                if (exception == null)
+                    exception = exc;
+                else
+                    exc.printStackTrace();
+            }
+
+            if (exception != null)
+                throw exception;
+        }
+
+        return source.toString();
+    }
+
+    public long getWindowHandle() {
+        return windowHandle;
+    }
+
+    public void setCursorPosCallback(GLFWCursorPosCallback cursorPosCallback) {
+        this.cursorPosCallback = cursorPosCallback;
+    }
+}

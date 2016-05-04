@@ -3,6 +3,10 @@ package alg;
 import exceptions.DoublesOutOfRangeException;
 import exceptions.NotInstanceOfException;
 
+/**
+ * Add Funktion kann unbgerenzte Anzahl von Vektoren aufaddieren, weil der zweite Parammeter ein Array ist.
+ */
+
 public class LinAlg {
 
     private LinAlg(){}
@@ -10,6 +14,14 @@ public class LinAlg {
     public static Vektor add(Vektor v1, Vektor v2) throws DoublesOutOfRangeException, NotInstanceOfException {
         Vektor result = v1.clone();
         result.add(v2);
+        return result;
+    }
+
+    public static Vektor add(Vektor v1, Vektor ...v2) throws DoublesOutOfRangeException, NotInstanceOfException {
+        Vektor result = v1.clone();
+        for (Vektor v : v2){
+            result.add(v);
+        }
         return result;
     }
 

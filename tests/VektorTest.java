@@ -256,4 +256,12 @@ public class VektorTest {
         double product = v1.productOfallCoordinats();
         assertEquals(24, product, .00001);
     }
+
+    @Test
+    public void limit() throws IllegalArgumentException, DoublesOutOfRangeException {
+        Vektor3D v1 = new Vektor3D(40, 211, 32);
+        v1.limit(10);
+        double lengthNew = v1.length();
+        assertEquals(10, lengthNew, 0.001);
+    }
 }

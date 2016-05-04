@@ -1,10 +1,26 @@
 package lwjgl;
 
-import framentLoops.MyFragmentLoop;
+import framentLoops.FirstLayerLoop;
+import framentLoops.SwarmLayerLoop;
 
-public class MyWindow extends BasisWindow{
+public class MyWindow extends BasisWindow {
+    static public int WINDOW_WIDTH = 640;
+    static public int WINDOW_HEIGHT = 480;
+
+    @Override
+    public void insideLoop() {
+        if (layerLoop != null)
+            layerLoop.loop();
+    }
+
     public MyWindow() {
-        super(640, 480, "CG 2", new MyFragmentLoop());
+        super(WINDOW_WIDTH, WINDOW_HEIGHT, "CG 2");
+
+        FirstLayerLoop firstLayerLoop = new FirstLayerLoop();
+        SwarmLayerLoop swarmLayerLoop = new SwarmLayerLoop(this);
+        //setLayerLoop(firstLayerLoop);
+        setLayerLoop(swarmLayerLoop);
+
         this.run();
     }
 

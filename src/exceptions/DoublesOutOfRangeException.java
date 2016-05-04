@@ -1,7 +1,7 @@
 package exceptions;
 
 
-public class DoublesOutOfRangeException extends Exception{
+public class DoublesOutOfRangeException extends RuntimeException{
     public DoublesOutOfRangeException(String message) {
         super(message);
     }

@@ -1,6 +1,6 @@
 package exceptions;
 
-public class NotInstanceOfException extends Exception{
+public class NotInstanceOfException extends RuntimeException{
     public NotInstanceOfException(String message) {
         super(message);
     }

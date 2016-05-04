@@ -3,16 +3,16 @@ package behaviors;
 import objects.MovingObject;
 
 public class FlummiBehavior implements Behavior {
-    private MovingObject object;
+    private MovingObject obj;
 
-    public FlummiBehavior(MovingObject object) {
-        this.object = object;
+    public FlummiBehavior(MovingObject obj) {
+        this.obj = obj;
     }
 
     @Override
     public void updateState() {
-        object.setYPos(object.getYPos() + object.getSpeed());
-        if (object.getYPos() > 480 || object.getYPos() < 0 ||object.getXPos() < 0)
-            object.setSpeed(object.getSpeed() * -1);
+        obj.setYPos(obj.getYPos() + obj.getMaxSpeed());
+        if (obj.getYPos() > 480 || obj.getYPos() < 0 || obj.getXPos() < 0)
+            obj.setMaxSpeed(obj.getMaxSpeed() * -1);
     }
 }

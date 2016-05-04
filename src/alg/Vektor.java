@@ -5,7 +5,7 @@ import exceptions.NotInstanceOfException;
 //lange beschneiden auf bistimte länge 12 auf 10
 //länge hoch zwei, ohne sqrt um abstand zu vergleichen
 //klassen diagramm, entscheidung eklärrung, einpaar funktionen
-//In Euclidean space, a vector is a geometrical object that possesses both a magnitude and a direction.
+//In Euclidean space, a vector is a geometrical object that possesses both a magnitude and a velocity.
 
 /**
  * Mein Klassendiagram sieht so aus:
@@ -15,13 +15,9 @@ import exceptions.NotInstanceOfException;
  * alg.Vektor2D : coords[2], alg.Vektor3D: coords[3] und so weiter) und (@member deltaByFloatCompartment ) ein Deltawert für den Floatvergleich hat.
  * Dank der Architektur kann man von der Klasse verschiedene Vektoren ableiten, die dann gleich alle benötigte Funktionen
  * zu verfügung haben.
- *
+ * <p>
  * Das ist möglich, da die Funktionen add, sub, mult, div, equals, notEquals, toString, isNullVektor, length, normalize, setPosition
  * algemeingültig definiert werden können.
- *
- *
- *
- *
  */
 abstract public class Vektor implements Cloneable {
 
@@ -53,15 +49,16 @@ abstract public class Vektor implements Cloneable {
      * this:{ 3, 5 , 2} + v1:{ 2 , 3 , 4 }  = this{ 5 , 8 , 6 }
      *
      * @param summand inherit from alg.Vektor class
-     *
      * @throws DoublesOutOfRangeException by (+,-)Double.MaxValue overflow
-     * @throws NotInstanceOfException if class of one vector is not assignable from another vector
+     * @throws NotInstanceOfException     if class of one vector is not assignable from another vector
      */
-    public void add(Vektor summand) throws DoublesOutOfRangeException, NotInstanceOfException {
-        if (coords.length != summand.getCoords().length) throw new NotInstanceOfException("Expected: " + this.getClass());
+    public Vektor add(Vektor summand) throws DoublesOutOfRangeException, NotInstanceOfException {
+        if (coords.length != summand.getCoords().length)
+            throw new NotInstanceOfException("Expected: " + this.getClass());
         for (int i = 0; i < coords.length; i++) {
             coords[i] = addTwoDoubles(coords[i], summand.getCoords()[i]);
         }
+        return this;
     }
 
     /**
@@ -70,9 +67,8 @@ abstract public class Vektor implements Cloneable {
      * this:{ 3, 5 , 2} + v1:{ 2 , 3 , 4 }  = this{ 1 , 2 , -2 }
      *
      * @param subtrahend inherit from alg.Vektor class
-     *
      * @throws DoublesOutOfRangeException by (+,-)Double.MaxValue overflow
-     * @throws NotInstanceOfException if class of one vector is not assignable from another vector
+     * @throws NotInstanceOfException     if class of one vector is not assignable from another vector
      */
     public void sub(Vektor subtrahend) throws DoublesOutOfRangeException, NotInstanceOfException {
         double[] summand = subtrahend.getCoords();
@@ -85,17 +81,18 @@ abstract public class Vektor implements Cloneable {
     /**
      * Multiplies each component of the alg.Vektor by @param multiplicand
      *
-     * @param  multiplicand (double)
+     * @param multiplicand (double)
      * @throws DoublesOutOfRangeException by (+,-)Double.MaxValue overflow
      */
-    public void mult(double multiplicand) throws DoublesOutOfRangeException{
+    public Vektor mult(double multiplicand) throws DoublesOutOfRangeException {
         for (int i = 0; i < coords.length; i++) {
             coords[i] = multTwoDoubles(coords[i], multiplicand);
         }
+        return this;
     }
 
     //double as param
-    public void div(double d) throws DoublesOutOfRangeException{
+    public void div(double d) throws DoublesOutOfRangeException {
         for (int i = 0; i < coords.length; i++) {
             coords[i] = divTwoDoubles(coords[i], d);
         }
@@ -134,17 +131,17 @@ abstract public class Vektor implements Cloneable {
     }
 
     static public double multTwoDoubles(double d1, double d2) throws DoublesOutOfRangeException {
-        if ( (d1!=0) && Math.abs(d2) > Math.abs(Double.MAX_VALUE / d1)) {
+        if ((d1 != 0) && Math.abs(d2) > Math.abs(Double.MAX_VALUE / d1)) {
             throw new DoublesOutOfRangeException("DOUBLES ARE TOO BIG");
         }
-        if (d1*d2 == Double.NEGATIVE_INFINITY || d1*d2 == Double.POSITIVE_INFINITY) {
+        if (d1 * d2 == Double.NEGATIVE_INFINITY || d1 * d2 == Double.POSITIVE_INFINITY) {
             throw new DoublesOutOfRangeException("INFINITY");
         }
         return d1 * d2;
     }
 
     static public double divTwoDoubles(double d1, double d2) throws IllegalArgumentException {
-        if ( d2 == 0) {
+        if (d2 == 0) {
             throw new IllegalArgumentException("DIVISOR IS 0");
         } else if ((Math.abs(d2) < 1) && Math.abs(d1 / Double.MAX_VALUE) > Math.abs(d2)) {
             throw new IllegalArgumentException("DIVISOR IS TO SMALL (-1 < D < 1)");
@@ -195,8 +192,8 @@ abstract public class Vektor implements Cloneable {
         return true;
     }
 
-    public void abs(){
-        for(int coord = 0; coord< coords.length; coord++){
+    public void abs() {
+        for (int coord = 0; coord < coords.length; coord++) {
             coords[coord] = Math.abs(coords[coord]);
         }
     }
@@ -204,7 +201,9 @@ abstract public class Vektor implements Cloneable {
     public double length() throws DoublesOutOfRangeException {
         double result = 0;
         for (double coord : coords) {
-            result = Vektor.addTwoDoubles(result, Vektor.multTwoDoubles(coord, coord));
+            result = Vektor.addTwoDoubles(
+                    result, Vektor.multTwoDoubles(coord, coord)
+            );
         }
         return Math.sqrt(result);
     }
@@ -234,10 +233,18 @@ abstract public class Vektor implements Cloneable {
         return result;
     }
 
-    public void normalize() throws IllegalArgumentException, DoublesOutOfRangeException {
+    public Vektor normalize() throws IllegalArgumentException, DoublesOutOfRangeException {
         double length = length();
-        for (int i = 0; i < coords.length; i++) {
-            coords[i] = Vektor.divTwoDoubles(coords[i], length);
-        }
+        if (length == 0) return this;
+        div(length);
+        return this;
+    }
+
+    public void limit(double limit) throws IllegalArgumentException, DoublesOutOfRangeException {
+        double length = length();
+        if (limit <= 0 || length <= limit) return;
+
+        double ratio = limit / length;
+        mult(ratio);
     }
 }
