@@ -8,6 +8,7 @@ import exceptions.NotInstanceOfException;
 //In Euclidean space, a vector is a geometrical object that possesses both a magnitude and a velocity.
 
 /**
+ * kminhc@gmail.com
  * Mein Klassendiagram sieht so aus:
  * Es gibt eine abstakte Klasse alg.Vektor, von der folgende Klassen abgeleitet werden: alg.Vektor2D, alg.Vektor3D
  * Ich habe mich für eine Oberklasse entschieden, weil es viele funktionen gibt, die für alle Vektoren belibiger Demension algemeingültig sind.
@@ -176,11 +177,11 @@ abstract public class Vektor implements Cloneable {
 
     @Override
     public String toString() {
-        String string = this.getClass() + " : { ";
+        String string = this.getClass() + " : [ ";
         for (double d : coords)
             string += d + ", ";
         string = string.subSequence(0, string.length() - 2).toString();
-        string += " }";
+        string += " ]";
         return string;
     }
 

@@ -1,9 +1,7 @@
 package framentLoops;
 
 import alg.Vektor2D;
-import behaviors.SwarmBehavior;
-import behaviors.VelocityBasedMovementBehavior;
-import behaviors.WallAvoidanceBehavior;
+import behaviors.*;
 import com.sun.istack.internal.NotNull;
 import com.sun.prism.paint.Color;
 import lwjgl.BasisWindow;
@@ -20,12 +18,20 @@ import java.util.Random;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class SwarmLayerLoop implements LayerLoop {
-    ArrayList<MovingGroup> swarms;
+    public static final int MOUSE_AREA = 60;
     BasisWindow window;
+    ArrayList<MovingGroup> swarms;
+    MouseListenerBehavior leftButtonClickedMoving;
+
+    public ArrayList<MovingGroup> getSwarms() {
+        return swarms;
+    }
 
     public SwarmLayerLoop(@NotNull final BasisWindow window) {
-        this.window = window;
+        super();
         swarms = new ArrayList<>();
+        this.window = window;
+
     }
 
     @Override
@@ -41,21 +47,23 @@ public class SwarmLayerLoop implements LayerLoop {
             @Override
             public void invoke(long window, double xpos, double ypos) {
                 ypos = MyWindow.WINDOW_HEIGHT - ypos ;
+
                 int state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
                 if (state == GLFW_PRESS) {
-                    for (MovingObject mo : swarms.get(0).getSwarmAgents()) {
-                        //mo.setPos(new Vektor2D(xpos,ypos));
-                        //System.out.println("X: " + xpos + "  Y: " + ypos);
-                        //System.out.println("MOX: " + mo.getXPos() + "  MOY: " + mo.getYPos());
-                        if (
-                                (xpos < mo.getXPos() + 30 && xpos > mo.getXPos() - 30) &&
-                                (ypos < mo.getYPos() + 30 && ypos > mo.getYPos() - 30)
-                                ) {
-                            System.out.println(true);
-                            mo.getAcceleration().add(new Vektor2D(xpos,ypos).mult(100));
-                            //mo.setPos(new Vektor2D(xpos,ypos));
-                        }
+                    if (leftButtonClickedMoving != null) {
+                        leftButtonClickedMoving.mouseMovingWithButtonPressed(new Vektor2D(xpos,ypos));
                     }
+                    /*for (MovingObject mo : swarms.get(0).getSwarmAgents()) {
+                        if (
+                                (xpos < mo.getXPos() + MOUSE_AREA && xpos > mo.getXPos() - MOUSE_AREA) &&
+                                (ypos < mo.getYPos() + MOUSE_AREA && ypos > mo.getYPos() - MOUSE_AREA)
+                                ) {
+                            Vektor2D aligment = new Vektor2D(xpos,ypos);
+                            aligment.sub(mo.getPos());
+                            aligment.mult(10);
+                            mo.getVelocity().add(aligment);
+                        }
+                    }*/
                 }
             }
         });
@@ -78,6 +86,8 @@ public class SwarmLayerLoop implements LayerLoop {
             swarm.addAgent(circle);
         }
         addObjectToScene(swarm);
+
+        leftButtonClickedMoving = new EscapeTheMouse(this);
     }
 
     public void addObjectToScene(MovingGroup swarm) {

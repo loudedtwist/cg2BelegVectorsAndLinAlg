@@ -1,7 +1,7 @@
 package behaviors;
 
-import alg.Vektor;
+import alg.Vektor2D;
 
 public interface MouseListenerBehavior {
-    void mouseMovingWithButtonPressed(Vektor coord);
+    void mouseMovingWithButtonPressed(Vektor2D coord);
 }
