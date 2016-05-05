@@ -41,6 +41,49 @@ public class SwarmLayerLoop implements LayerLoop {
         createSwarmAgents();
     }
 
+    private void createSwarmAgents() {
+        Swarm swarm = new Swarm();
+        //swarm.addBehavior(new SwarmBehavior(swarm));
+        swarm.addBehavior(new SwarmFunctionalBehavior(swarm));
+        Random rand = new Random();
+        for (int i = 0; i < 500; i++) {
+            Circle circle = new Circle(
+                    new Vektor2D(
+                            (0 + i * (5 + i * rand.nextFloat())) % 640,
+                            (0 + i * (i + 5 * rand.nextFloat())) % 480),
+                    rand.nextFloat(),
+                    (35) * rand.nextFloat() + 5,
+                    2 * rand.nextFloat() + 0.5f,
+                    new Color(rand.nextFloat() % 1f, rand.nextFloat(), 0.7f, 1));
+            circle.addBehavior(new VelocityBasedMovementBehavior(circle));
+            circle.addBehavior(new WallAvoidanceBehavior(circle));
+            swarm.addAgent(circle);
+        }
+        addObjectToScene(swarm);
+
+        leftButtonClickedMoving = new EscapeTheMouse(this);
+        rightButtonClickedMoving = new AlignToTheMouseBehavior(this);
+    }
+
+    public void addObjectToScene(MovingGroup swarm) {
+        swarms.add(swarm);
+    }
+
+    @Override
+    public void loop() {
+        for (MovingGroup swarm : swarms) {
+            swarm.getSwarmAgents().forEach(MovingObject::callBehavior);
+            swarm.callBehavior();
+            swarm.render();
+        }
+
+    }
+
+    @Override
+    public void setWindowObject(BasisWindow window) {
+        this.window = window;
+    }
+
     private void setOnMouseMoveLButtonClicked() {
         GLFWCursorPosCallback cursorPosCallback;
         System.out.println(window.getWindowHandle());
@@ -64,44 +107,5 @@ public class SwarmLayerLoop implements LayerLoop {
             }
         });
         window.setCursorPosCallback(cursorPosCallback);
-    }
-
-    private void createSwarmAgents() {
-        Swarm swarm = new Swarm();
-        swarm.addBehavior(new SwarmBehavior(swarm));
-        Random rand = new Random();
-        for (int i = 0; i < 400; i++) {
-            Circle circle = new Circle(
-                    new Vektor2D((0 + i * (5 + i * rand.nextFloat())) % 640, (0 + i * (i + 5 * rand.nextFloat())) % 480),
-                    (25) * rand.nextFloat(),
-                    2 * rand.nextFloat() + 0.5f,
-                    new Color(rand.nextFloat() % 1f, rand.nextFloat(), 0.7f, 1)
-            );
-            circle.addBehavior(new VelocityBasedMovementBehavior(circle));
-            circle.addBehavior(new WallAvoidanceBehavior(circle));
-            swarm.addAgent(circle);
-        }
-        addObjectToScene(swarm);
-
-        leftButtonClickedMoving = new EscapeTheMouse(this);
-        rightButtonClickedMoving = new AlignToTheMouseBehavior(this);
-    }
-
-    public void addObjectToScene(MovingGroup swarm) {
-        swarms.add(swarm);
-    }
-
-    @Override
-    public void loop() {
-        for (MovingGroup swarm : swarms) {
-            swarm.callBehavior();
-            swarm.getSwarmAgents().forEach(MovingObject::callBehavior);
-            swarm.render();
-        }
-    }
-
-    @Override
-    public void setWindowObject(BasisWindow window) {
-        this.window = window;
     }
 }

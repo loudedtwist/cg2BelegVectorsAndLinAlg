@@ -12,6 +12,10 @@ import objects.MovingObject;
 import java.util.ArrayList;
 import java.util.Random;
 
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.glMultiTexCoord2f;
+
 public class FirstLayerLoop implements LayerLoop {
     ArrayList<MovingObject> movObjects;
 
@@ -34,10 +38,10 @@ public class FirstLayerLoop implements LayerLoop {
         for (int i = 0 ;  i< 5000; i++ ){
             Circle circle = new Circle(
                     new Vektor2D((0+i*(5+i*rand.nextFloat()))%640,(0+i*(i+5*rand.nextFloat()))%480),
+                    rand.nextFloat(),
                     (40)*rand.nextFloat(),
                     4.5f*rand.nextFloat(),
-                    new Color(rand.nextFloat(),rand.nextFloat(),rand.nextFloat(),rand.nextFloat())
-            );
+                    new Color(rand.nextFloat(),rand.nextFloat(),rand.nextFloat(),rand.nextFloat()));
             addMovingObject(circle);
             flummi = new FlummiBehavior(circle);
             wind = new WindBehavior(circle);
@@ -47,6 +51,7 @@ public class FirstLayerLoop implements LayerLoop {
             circle.addBehavior(gravity);
             circle.addBehavior(wind);
         }
+
     }
 
     public void addMovingObject(MovingObject movingObject ){

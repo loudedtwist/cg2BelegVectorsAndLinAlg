@@ -35,6 +35,8 @@ abstract public class BasisWindow {
     Calendar calendarFPS;
     long next_game_tick;
 
+    int scale = 0;
+    int vz=1;
 
     public int getWidth() {
         return width;
@@ -164,6 +166,8 @@ abstract public class BasisWindow {
 
             insideLoop();
 
+            changeParameterInShader();
+
             sleepUntilNextGameTick(calendarFPS, next_game_tick);
 
             glEnd();
@@ -174,6 +178,17 @@ abstract public class BasisWindow {
         }
 
         destroyProgramAndShaders();
+    }
+
+    private void changeParameterInShader() {
+        int loc = glGetUniformLocation(shaderProgramm, "Scale");
+        if(scale>100 ) vz=-1;
+        if(scale<1 ) vz=1;
+        scale+=vz;
+        if (loc != -1)
+        {
+            glUniform1f(loc, scale/100.f);
+        }
     }
 
     abstract public void insideLoop();

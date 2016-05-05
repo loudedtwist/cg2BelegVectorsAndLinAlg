@@ -8,6 +8,7 @@ import java.util.ArrayList;
 abstract public class BasicObject {
 
     protected Vektor2D pos;
+    double zPos = 0;
     protected ArrayList<Behavior> behaviors;
 
     public Vektor2D getPos() {
@@ -22,6 +23,10 @@ abstract public class BasicObject {
         return pos.getY();
     }
 
+    public double getZPos() {
+        return zPos;
+    }
+
     public void setPos(Vektor2D pos) {
         this.pos = pos;
     }
@@ -34,6 +39,10 @@ abstract public class BasicObject {
         pos.setY(yPos);
     }
 
+    public void setZPos(double zPos) {
+        this.zPos = zPos;
+    }
+
     public abstract void render();
 
     public BasicObject() {
@@ -41,7 +50,7 @@ abstract public class BasicObject {
     }
 
     public BasicObject(double xPos, double yPos) {
-        pos = new Vektor2D(xPos,yPos);
+        pos = new Vektor2D(xPos, yPos);
         this.behaviors = new ArrayList<>(5);
     }
 
