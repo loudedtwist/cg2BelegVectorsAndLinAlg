@@ -150,14 +150,13 @@ abstract public class BasisWindow {
         calendarFPS = Calendar.getInstance();
         next_game_tick = calendarFPS.getTimeInMillis();
 
+        loadShadersSource();
+        initShaders();
+
         layerLoop.init();
     }
 
     private void loop() {
-
-
-        loadShadersSource();
-        initShaders();
 
         glOrtho(0.0, MyWindow.WINDOW_WIDTH, 0.0, MyWindow.WINDOW_HEIGHT, -1.0, 1.0);
         while (glfwWindowShouldClose(windowHandle) == GLFW_FALSE) {
@@ -169,7 +168,6 @@ abstract public class BasisWindow {
             changeParameterInShader();
 
             sleepUntilNextGameTick(calendarFPS, next_game_tick);
-
             glEnd();
             glUseProgram(0);
 

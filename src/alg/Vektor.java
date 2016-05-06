@@ -13,18 +13,26 @@ import exceptions.NotInstanceOfException;
  * Es gibt eine abstakte Klasse alg.Vektor, von der folgende Klassen abgeleitet werden: alg.Vektor2D, alg.Vektor3D
  * Ich habe mich für eine Oberklasse entschieden, weil es viele funktionen gibt, die für alle Vektoren belibiger Demension algemeingültig sind.
  * Es ist auch offensichtlich, dass jede abgeleitete von alg.Vektor Klasse , ein array aus Koordinaten hat (nach Demension unterschiedlich:
- * alg.Vektor2D : coords[2], alg.Vektor3D: coords[3] und so weiter) und (@member deltaByFloatCompartment ) ein Deltawert für den Floatvergleich hat.
+ * alg.Vektor2D : coords[2], alg.Vektor3D: coords[3] und so weiter) und (@member deltaFloatError ) ein Deltawert für den Floatvergleich hat.
  * Dank der Architektur kann man von der Klasse verschiedene Vektoren ableiten, die dann gleich alle benötigte Funktionen
  * zu verfügung haben.
  * <p>
  * Das ist möglich, da die Funktionen add, sub, mult, div, equals, notEquals, toString, isNullVektor, length, normalize, setPosition
- * algemeingültig definiert werden können.
+ * algemeingültig definiert werden können.</p>
+ * <p>
+ * Die Funktionen add, sub, mult, div, abs, limit geben die Referenz auf sich selbst (this) zurück. Es ermöglicht
+ * Method chaining an dem einem Objekt und macht solche ausdrücke möglich:
+ * Vektor2D velocity = new Velocity2D(0,0);
+ * velocity.add(alignment).add(cohesion).add(separation).mult(accsl);
+ * die Scheibweise ist sehr verständlich zu lessen und intuitive zu schreiben
+ * </p>
+ *
  */
 abstract public class Vektor implements Cloneable {
 
     private double coords[];
 
-    private double deltaByFloatCompartment = 0.0000001;
+    private double deltaFloatError = 0.0000001;
 
     abstract public Vektor clone();
 
@@ -32,12 +40,12 @@ abstract public class Vektor implements Cloneable {
         return coords;
     }
 
-    public void setDeltaByFloatCompartment(double deltaByFloatCompartment) {
-        this.deltaByFloatCompartment = deltaByFloatCompartment;
+    public void setDeltaFloatError(double deltaFloatError) {
+        this.deltaFloatError = deltaFloatError;
     }
 
-    public double getDeltaByFloatCompartment() {
-        return this.deltaByFloatCompartment;
+    public double getDeltaFloatError() {
+        return this.deltaFloatError;
     }
 
     public void setPosition(double... params) {
@@ -71,12 +79,13 @@ abstract public class Vektor implements Cloneable {
      * @throws DoublesOutOfRangeException by (+,-)Double.MaxValue overflow
      * @throws NotInstanceOfException     if class of one vector is not assignable from another vector
      */
-    public void sub(Vektor subtrahend) throws DoublesOutOfRangeException, NotInstanceOfException {
+    public Vektor sub(Vektor subtrahend) throws DoublesOutOfRangeException, NotInstanceOfException {
         double[] summand = subtrahend.getCoords();
         if (coords.length != summand.length) throw new NotInstanceOfException("Expected: " + this.getClass());
         for (int i = 0; i < coords.length; i++) {
             coords[i] = subTwoDoubles(coords[i], subtrahend.getCoords()[i]);
         }
+        return this;
     }
 
     /**
@@ -93,24 +102,95 @@ abstract public class Vektor implements Cloneable {
     }
 
     //double as param
-    public void div(double d) throws DoublesOutOfRangeException {
+    public Vektor div(double d) throws DoublesOutOfRangeException {
         for (int i = 0; i < coords.length; i++) {
             coords[i] = divTwoDoubles(coords[i], d);
         }
+        return this;
     }
 
-    public void multComponentwise(Vektor v) throws DoublesOutOfRangeException, NotInstanceOfException {
-        if (coords.length != v.getCoords().length) throw new NotInstanceOfException("Expected: " + this.getClass());
-        for (int i = 0; i < coords.length; i++) {
-            coords[i] = multTwoDoubles(coords[i], v.getCoords()[i]);
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) return false;
+        if (obj == this) return true;
+
+        if (!getClass().isAssignableFrom(obj.getClass())) return false;
+        Vektor p = (Vektor) obj;
+        double[] deltaArray = new double[p.getCoords().length];
+
+        for (int i = 0; i < deltaArray.length; i++) {
+            try {
+                deltaArray[i] = Math.abs(Vektor.subTwoDoubles(getCoords()[i], p.getCoords()[i]));
+                if (deltaArray[i] > deltaFloatError) return false;
+            } catch (DoublesOutOfRangeException e) {
+                e.printStackTrace();
+                return false;
+            }
         }
+        return true;
     }
 
-    public void divComponentwise(Vektor v) throws DoublesOutOfRangeException, NotInstanceOfException {
-        if (coords.length != v.getCoords().length) throw new NotInstanceOfException("Expected: " + this.getClass());
-        for (int i = 0; i < coords.length; i++) {
-            coords[i] = divTwoDoubles(coords[i], v.getCoords()[i]);
+    public boolean notEquals(Object obj) {
+        return !this.equals(obj);
+    }
+
+    @Override
+    public String toString() {
+        String string = this.getClass() + " : [ ";
+        for (double d : coords)
+            string += d + ", ";
+        string = string.subSequence(0, string.length() - 2).toString();
+        string += " ]";
+        return string;
+    }
+
+    public boolean isNullVektor() {
+        for (double coord : coords) {
+            if (coord != 0)
+                return false;
         }
+        return true;
+    }
+
+    public Vektor abs() {
+        for (int coord = 0; coord < coords.length; coord++) {
+            coords[coord] = Math.abs(coords[coord]);
+        }
+        return this;
+    }
+
+    public double length() throws DoublesOutOfRangeException {
+        double result = 0;
+        for (double coord : coords) {
+            result = Vektor.addTwoDoubles(
+                    result, Vektor.multTwoDoubles(coord, coord)
+            );
+        }
+        return Math.sqrt(result);
+    }
+
+    public double lengthExp2() throws DoublesOutOfRangeException {
+        double result = 0;
+        for (double coord : coords) {
+            result = Vektor.addTwoDoubles(result, Vektor.multTwoDoubles(coord, coord));
+        }
+        return result;
+    }
+
+    public Vektor normalize() throws IllegalArgumentException, DoublesOutOfRangeException {
+        double length = length();
+        if (length == 0) return this;
+        div(length);
+        return this;
+    }
+
+    public Vektor limit(double limit) throws IllegalArgumentException, DoublesOutOfRangeException {
+        double length = length();
+        if (limit <= 0 || length <= limit) return this;
+
+        double ratio = limit / length;
+        mult(ratio);
+        return this;
     }
 
     public static double addTwoDoubles(double a, double b) throws DoublesOutOfRangeException {
@@ -150,73 +230,6 @@ abstract public class Vektor implements Cloneable {
         return d1 / d2;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) return false;
-        if (obj == this) return true;
-
-        if (!getClass().isAssignableFrom(obj.getClass())) return false;
-        Vektor p = (Vektor) obj;
-        double[] deltaArray = new double[p.getCoords().length];
-
-        for (int i = 0; i < deltaArray.length; i++) {
-            try {
-                deltaArray[i] = Math.abs(Vektor.subTwoDoubles(getCoords()[i], p.getCoords()[i]));
-                if (deltaArray[i] > deltaByFloatCompartment) return false;
-            } catch (DoublesOutOfRangeException e) {
-                e.printStackTrace();
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public boolean notEquals(Vektor obj) {
-        return !this.equals(obj);
-    }
-
-    @Override
-    public String toString() {
-        String string = this.getClass() + " : [ ";
-        for (double d : coords)
-            string += d + ", ";
-        string = string.subSequence(0, string.length() - 2).toString();
-        string += " ]";
-        return string;
-    }
-
-    public boolean isNullVektor() {
-        for (double coord : coords) {
-            if (coord != 0)
-                return false;
-        }
-        return true;
-    }
-
-    public void abs() {
-        for (int coord = 0; coord < coords.length; coord++) {
-            coords[coord] = Math.abs(coords[coord]);
-        }
-    }
-
-    public double length() throws DoublesOutOfRangeException {
-        double result = 0;
-        for (double coord : coords) {
-            result = Vektor.addTwoDoubles(
-                    result, Vektor.multTwoDoubles(coord, coord)
-            );
-        }
-        return Math.sqrt(result);
-    }
-
-    public double lengthExp2() throws DoublesOutOfRangeException {
-        double result = 0;
-        for (double coord : coords) {
-            result = Vektor.addTwoDoubles(result, Vektor.multTwoDoubles(coord, coord));
-        }
-        return result;
-    }
-
     public double sumOfAllCoords() throws DoublesOutOfRangeException {
         double result = 0;
         for (double coord : coords) {
@@ -225,7 +238,6 @@ abstract public class Vektor implements Cloneable {
         return result;
     }
 
-    //return productOfallCoordinats of all coordinates , example: (4,2,3) -> 4*2*3 = 24
     public double productOfallCoordinats() throws DoublesOutOfRangeException {
         double result = 1;
         for (double coord : coords) {
@@ -234,18 +246,17 @@ abstract public class Vektor implements Cloneable {
         return result;
     }
 
-    public Vektor normalize() throws IllegalArgumentException, DoublesOutOfRangeException {
-        double length = length();
-        if (length == 0) return this;
-        div(length);
-        return this;
+    public void multTwoVekComponentwise(Vektor v) throws DoublesOutOfRangeException, NotInstanceOfException {
+        if (coords.length != v.getCoords().length) throw new NotInstanceOfException("Expected: " + this.getClass());
+        for (int i = 0; i < coords.length; i++) {
+            coords[i] = multTwoDoubles(coords[i], v.getCoords()[i]);
+        }
     }
 
-    public void limit(double limit) throws IllegalArgumentException, DoublesOutOfRangeException {
-        double length = length();
-        if (limit <= 0 || length <= limit) return;
-
-        double ratio = limit / length;
-        mult(ratio);
+    public void divTwoVekComponentwise(Vektor v) throws DoublesOutOfRangeException, NotInstanceOfException {
+        if (coords.length != v.getCoords().length) throw new NotInstanceOfException("Expected: " + this.getClass());
+        for (int i = 0; i < coords.length; i++) {
+            coords[i] = divTwoDoubles(coords[i], v.getCoords()[i]);
+        }
     }
 }

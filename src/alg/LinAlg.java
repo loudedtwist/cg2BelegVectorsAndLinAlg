@@ -57,13 +57,13 @@ public class LinAlg {
 
     public static Vektor multTwoVectors(Vektor v1, Vektor v2) throws DoublesOutOfRangeException, NotInstanceOfException {
         Vektor result = v1.clone();
-        result.multComponentwise(v2);
+        result.multTwoVekComponentwise(v2);
         return result;
     }
 
     public static Vektor divTwoVectors(Vektor v1, Vektor v2) throws DoublesOutOfRangeException, NotInstanceOfException {
         Vektor result = v1.clone();
-        result.divComponentwise(v2);
+        result.divTwoVekComponentwise(v2);
         return result;
     }
 

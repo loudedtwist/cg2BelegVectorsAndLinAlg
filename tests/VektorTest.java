@@ -18,9 +18,9 @@ public class VektorTest {
         Vektor3D v = new Vektor3D(1, 2, 3);
         Vektor3D expected = new Vektor3D(4, 8, 12);
         v.mult(4);
-        assertEquals(v.getX(), expected.getX(), v.getDeltaByFloatCompartment());
-        assertEquals(v.getY(), expected.getY(), v.getDeltaByFloatCompartment());
-        assertEquals(v.getZ(), expected.getZ(), v.getDeltaByFloatCompartment());
+        assertEquals(v.getX(), expected.getX(), v.getDeltaFloatError());
+        assertEquals(v.getY(), expected.getY(), v.getDeltaFloatError());
+        assertEquals(v.getZ(), expected.getZ(), v.getDeltaFloatError());
     }
     @Test
     public void multVecByDoubleMaxValueBy1() throws DoublesOutOfRangeException, NotInstanceOfException {;
@@ -32,9 +32,9 @@ public class VektorTest {
         Vektor3D v = new Vektor3D(4, 8, 12);
         Vektor3D expected = new Vektor3D(1, 2, 3);
         v.div(4);
-        assertEquals(v.getX(), expected.getX(), v.getDeltaByFloatCompartment());
-        assertEquals(v.getY(), expected.getY(), v.getDeltaByFloatCompartment());
-        assertEquals(v.getZ(), expected.getZ(), v.getDeltaByFloatCompartment());
+        assertEquals(v.getX(), expected.getX(), v.getDeltaFloatError());
+        assertEquals(v.getY(), expected.getY(), v.getDeltaFloatError());
+        assertEquals(v.getZ(), expected.getZ(), v.getDeltaFloatError());
     }
 
     @Test
@@ -163,15 +163,15 @@ public class VektorTest {
         Vektor2D p4 = new Vektor2D(4, 4);
         Vektor2D p5 = new Vektor2D(4.00000009, 4.00000009);
         Vektor2D p6 = new Vektor2D(4.00000009, 4.00000009);
-        p4.setDeltaByFloatCompartment(.0000001);
-        p6.setDeltaByFloatCompartment(.0000000001);
+        p4.setDeltaFloatError(.0000001);
+        p6.setDeltaFloatError(.0000000001);
 
 
         assertTrue(p1.equals(p2));
         assertTrue(p4.equals(p5));
         assertFalse(p1.equals(p3));
         assertFalse(p6.equals(p4));
-        p6.setDeltaByFloatCompartment(.0000001);
+        p6.setDeltaFloatError(.0000001);
         assertTrue(p6.equals(p4));
         assertFalse(p1.equals(null));
     }
@@ -184,15 +184,15 @@ public class VektorTest {
         Vektor2D p4 = new Vektor2D(4, 4);
         Vektor2D p5 = new Vektor2D(4.00000009, 4.00000009);
         Vektor2D p6 = new Vektor2D(4.00000009, 4.00000009);
-        p4.setDeltaByFloatCompartment(.0000001);
-        p6.setDeltaByFloatCompartment(.0000000001);
+        p4.setDeltaFloatError(.0000001);
+        p6.setDeltaFloatError(.0000000001);
 
 
         assertFalse(p1.notEquals(p2));
         assertFalse(p4.notEquals(p5));
         assertTrue(p1.notEquals(p3));
         assertTrue(p6.notEquals(p4));
-        p6.setDeltaByFloatCompartment(.0000001);
+        p6.setDeltaFloatError(.0000001);
         assertFalse(p6.notEquals(p4));
         assertTrue(p1.notEquals(null));
     }

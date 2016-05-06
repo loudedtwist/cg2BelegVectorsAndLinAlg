@@ -61,7 +61,7 @@ public class LinAlgTest {
         Vektor3D v1 = new Vektor3D(5, 3, 7);
         double expected = v1.length();
         double result = LinAlg.length(v1);
-        assertEquals(expected,result,v1.getDeltaByFloatCompartment());
+        assertEquals(expected,result,v1.getDeltaFloatError());
     }
     @Test
     public void multTwoVectors2D() throws DoublesOutOfRangeException, NotInstanceOfException {
@@ -176,10 +176,10 @@ public class LinAlgTest {
         Vektor2D v = new Vektor2D(-37, -21);
         Vektor2D expected = new Vektor2D(37, 21);
         Vektor2D result = (Vektor2D) LinAlg.abs(v);
-        assertEquals(expected.getX(),result.getX(),v.getDeltaByFloatCompartment());
-        assertEquals(expected.getY(),result.getY(),v.getDeltaByFloatCompartment());
-        assertEquals(-37,v.getX(),v.getDeltaByFloatCompartment());
-        assertEquals(-21,v.getY(),v.getDeltaByFloatCompartment());
+        assertEquals(expected.getX(),result.getX(),v.getDeltaFloatError());
+        assertEquals(expected.getY(),result.getY(),v.getDeltaFloatError());
+        assertEquals(-37,v.getX(),v.getDeltaFloatError());
+        assertEquals(-21,v.getY(),v.getDeltaFloatError());
     }
 
     @Test
