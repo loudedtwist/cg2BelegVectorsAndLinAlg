@@ -7,15 +7,16 @@ public class Vektor3D extends Vektor {
      */
     @Override
     public Vektor clone() {
-        return new Vektor3D(this.getX(), this.getY(),this.getZ());
+        return new Vektor3D(this.getX(), this.getY(), this.getZ());
     }
 
-    private void setPosition(int x , int y, int z) {
-        super.setPosition(x,y,z);
+    private Vektor3D setPosition(int x, int y, int z) {
+        super.setPosition(x, y, z);
+        return this;
     }
 
     public Vektor3D(double x, double y, double z) {
-        this.setPosition(x,y,z);
+        this.setPosition(x, y, z);
     }
 
     public Vektor3D(Vektor3D vek) {
@@ -26,16 +27,19 @@ public class Vektor3D extends Vektor {
         this(0, 0, 0);
     }
 
-    public double setX(double x) {
-        return getCoords()[0] = x;
+    public Vektor3D setX(double x) {
+        getCoords()[0] = x;
+        return this;
     }
 
-    public double setY(double y) {
-        return getCoords()[1] = y;
+    public Vektor3D setY(double y) {
+        getCoords()[1] = y;
+        return this;
     }
 
-    public double setZ(double y) {
-        return getCoords()[1] = y;
+    public Vektor3D setZ(double y) {
+        getCoords()[1] = y;
+        return this;
     }
 
     public double getX() {

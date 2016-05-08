@@ -9,7 +9,8 @@ import exceptions.NotInstanceOfException;
 
 public class LinAlg {
 
-    private LinAlg(){}
+    private LinAlg() {
+    }
 
     public static Vektor add(Vektor v1, Vektor v2) throws DoublesOutOfRangeException, NotInstanceOfException {
         Vektor result = v1.clone();
@@ -17,9 +18,9 @@ public class LinAlg {
         return result;
     }
 
-    public static Vektor add(Vektor v1, Vektor ...v2) throws DoublesOutOfRangeException, NotInstanceOfException {
+    public static Vektor add(Vektor v1, Vektor... v2) throws DoublesOutOfRangeException, NotInstanceOfException {
         Vektor result = v1.clone();
-        for (Vektor v : v2){
+        for (Vektor v : v2) {
             result.add(v);
         }
         return result;
@@ -31,6 +32,14 @@ public class LinAlg {
         return result;
     }
 
+    public static Vektor sub(Vektor v1, Vektor... v2) throws DoublesOutOfRangeException, NotInstanceOfException {
+        Vektor result = v1.clone();
+        for (Vektor v : v2) {
+            result.sub(v);
+        }
+        return result;
+    }
+
     public static Vektor mult(Vektor v1, double d) throws DoublesOutOfRangeException, NotInstanceOfException {
         Vektor result = v1.clone();
         result.mult(d);
@@ -38,7 +47,7 @@ public class LinAlg {
     }
 
     public static Vektor mult(double d, Vektor v1) throws DoublesOutOfRangeException, NotInstanceOfException {
-        return mult(v1,d);
+        return mult(v1, d);
     }
 
     public static Vektor div(Vektor v1, double d) throws DoublesOutOfRangeException, NotInstanceOfException {
@@ -48,10 +57,10 @@ public class LinAlg {
     }
 
     public static Vektor div(double d, Vektor v1) throws DoublesOutOfRangeException, NotInstanceOfException {
-        return div(v1,d);
+        return div(v1, d);
     }
 
-    public static double length(Vektor v ) throws DoublesOutOfRangeException {
+    public static double length(Vektor v) throws DoublesOutOfRangeException {
         return v.clone().length();
     }
 
@@ -187,18 +196,18 @@ public class LinAlg {
     u⃗ · v⃗ is the dot productOfallCoordinats (scalar productOfallCoordinats) of the two vectors, explained below.*/
     //cos∆ = ( v1 * v2 ) / ( ||v1||*||v2|| )
     public static double cosEquation(Vektor v1, Vektor v2) throws DoublesOutOfRangeException, NotInstanceOfException {
-        Vektor vWorker1  = LinAlg.getNormalizeFrom(v1);
-        Vektor vWorker2  = LinAlg.getNormalizeFrom(v2);
-        return LinAlg.dotProduct(vWorker1,vWorker2);
+        Vektor vWorker1 = LinAlg.getNormalizeFrom(v1);
+        Vektor vWorker2 = LinAlg.getNormalizeFrom(v2);
+        return LinAlg.dotProduct(vWorker1, vWorker2);
     }
 
     public static double angleRad(Vektor v1, Vektor v2) throws DoublesOutOfRangeException, NotInstanceOfException {
-        double cos  = cosEquation(v1,v2);
+        double cos = cosEquation(v1, v2);
         return Math.acos(cos);
     }
 
     public static double angleDegree(Vektor v1, Vektor v2) throws DoublesOutOfRangeException, NotInstanceOfException {
-        double rad  = angleRad(v1,v2);
+        double rad = angleRad(v1, v2);
         return degreeToRad(rad);
     }
 }

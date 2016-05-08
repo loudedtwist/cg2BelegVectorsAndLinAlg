@@ -10,8 +10,9 @@ public class Vektor2D extends Vektor {
         return new Vektor2D(this.getX(), this.getY());
     }
 
-    private void setPosition(int x, int y) {
+    private Vektor2D setPosition(int x, int y) {
         super.setPosition(x, y);
+        return this;
     }
 
     public Vektor2D() {
@@ -26,12 +27,14 @@ public class Vektor2D extends Vektor {
         this(vek.getY(), vek.getY());
     }
 
-    public double setX(double x) {
-        return getCoords()[0] = x;
+    public Vektor2D setX(double x) {
+        getCoords()[0] = x;
+        return this;
     }
 
-    public double setY(double y) {
-        return getCoords()[1] = y;
+    public Vektor2D setY(double y) {
+        getCoords()[1] = y;
+        return this;
     }
 
     public double getX() {
