@@ -37,15 +37,19 @@ public class SwarmLayerLoop implements LayerLoop {
 
     @Override
     public void init() {
+
+        leftButtonClickedMoving = new EscapeTheMouse(this);
+        rightButtonClickedMoving = new AlignToTheMouseBehavior(this);
+
         setOnMouseMoveLButtonClicked();
         createSwarmAgents();
     }
 
     private void createSwarmAgents() {
-        Swarm swarm = new Swarm();
-        //swarm.addBehavior(new SwarmBehavior(swarm));
-        swarm.addBehavior(new SwarmFunctionalBehavior(swarm));
         Random rand = new Random();
+
+        Swarm swarm = new Swarm();
+        swarm.addBehavior(new SwarmFunctionalBehavior(swarm));
         for (int i = 0; i < 500; i++) {
             Circle circle = new Circle(
                     new Vektor2D(
@@ -53,16 +57,13 @@ public class SwarmLayerLoop implements LayerLoop {
                             (0 + i * (i + 5 * rand.nextFloat())) % 480),
                     rand.nextFloat(),
                     (35) * rand.nextFloat() + 5,
-                    2 * rand.nextFloat() + 0.5f,
+                    3 * rand.nextFloat() + 0.5f,
                     new Color(rand.nextFloat() % 1f, rand.nextFloat(), 0.7f, 1));
             circle.addBehavior(new VelocityBasedMovementBehavior(circle));
             circle.addBehavior(new WallAvoidanceBehavior(circle));
             swarm.addAgent(circle);
         }
         addObjectToScene(swarm);
-
-        leftButtonClickedMoving = new EscapeTheMouse(this);
-        rightButtonClickedMoving = new AlignToTheMouseBehavior(this);
     }
 
     public void addObjectToScene(MovingGroup swarm) {
@@ -86,7 +87,6 @@ public class SwarmLayerLoop implements LayerLoop {
 
     private void setOnMouseMoveLButtonClicked() {
         GLFWCursorPosCallback cursorPosCallback;
-        System.out.println(window.getWindowHandle());
         glfwSetCursorPosCallback(window.getWindowHandle(), cursorPosCallback = new GLFWCursorPosCallback() {
             @Override
             public void invoke(long window, double xpos, double ypos) {

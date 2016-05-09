@@ -105,7 +105,11 @@ public class Circle extends MovingObject {
         glColor3f(r, g, b);
         glBegin(GL_TRIANGLE_STRIP);
         glVertex3d(getXPos(), getYPos(), -getZPos() -  getXPos()/MyWindow.WINDOW_WIDTH);
+
+        glColor3f(b, r, b);
         glVertex3d(getXPos() + Vektor.divTwoDoubles(getRadius(),2), getYPos() +getRadius() , getZPos());
+
+        glColor3f(r, b, g);
         glVertex3d(getXPos() + getRadius(), getYPos() ,-getZPos() - getYPos()/MyWindow.WINDOW_HEIGHT);
         glEnd();
 
@@ -116,7 +120,7 @@ public class Circle extends MovingObject {
     }
 
     private void drawVelocity() {
-        glColor3f(0, 0, 0);
+        glColor3f(0.6f, 0.6f, 0.6f);
         glBegin(GL_LINE_STRIP);
         Vektor2D lineEnd = (Vektor2D) LinAlg.add(getPos(), LinAlg.mult(getVelocity(), 30));
         glVertex2d(getXPos(), getYPos());

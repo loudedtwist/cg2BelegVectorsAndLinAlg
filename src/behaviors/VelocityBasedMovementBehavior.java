@@ -14,6 +14,10 @@ public class VelocityBasedMovementBehavior implements Behavior {
         obj.getVelocity().add(obj.getAcceleration());
         obj.getVelocity().limit(obj.getMaxSpeed());
         obj.getPos().add(obj.getVelocity());
+        resetAcceleration();
+    }
+
+    private void resetAcceleration() {
         obj.getAcceleration().mult(0);
     }
 }

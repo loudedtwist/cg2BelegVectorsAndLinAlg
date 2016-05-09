@@ -16,6 +16,7 @@ public class WindBehavior implements Behavior {
 
     @Override
     public void updateState() {
+        //thin-plate-spline
         Random random = new Random();
         int richtung = 1;
         if(!random.nextBoolean()) richtung = -1;

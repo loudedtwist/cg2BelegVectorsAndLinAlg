@@ -1,6 +1,8 @@
 package lwjgl;
 
+import framentLoops.BackgoundLayer;
 import framentLoops.FirstLayerLoop;
+import framentLoops.LayerLoop;
 import framentLoops.SwarmLayerLoop;
 
 public class MyWindow extends BasisWindow {
@@ -9,17 +11,20 @@ public class MyWindow extends BasisWindow {
 
     @Override
     public void insideLoop() {
-        if (layerLoop != null)
+        for (LayerLoop layerLoop : layerLoops) {
             layerLoop.loop();
+        }
     }
 
     public MyWindow() {
         super(WINDOW_WIDTH, WINDOW_HEIGHT, "CG 2");
 
         FirstLayerLoop firstLayerLoop = new FirstLayerLoop();
+        BackgoundLayer backgoundLayer = new BackgoundLayer();
         SwarmLayerLoop swarmLayerLoop = new SwarmLayerLoop(this);
-        //setLayerLoop(firstLayerLoop);
-        setLayerLoop(swarmLayerLoop);
+        //setLayerLoops(firstLayerLoop);
+        layerLoops.add(backgoundLayer);
+        layerLoops.add(swarmLayerLoop);
 
         this.run();
     }

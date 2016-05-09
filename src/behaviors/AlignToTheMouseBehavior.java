@@ -14,11 +14,11 @@ public class AlignToTheMouseBehavior implements MouseListenerBehavior {
     }
 
     @Override
-    public void mouseMovingWithButtonPressed(Vektor2D coord) {
+    public void mouseMovingWithButtonPressed(Vektor2D mouseCoord) {
         for (MovingObject mo : layerLoop.getSwarms().get(0).getSwarmAgents()) {
-            if ((coord.getX() < mo.getXPos() + MOUSE_AREA && coord.getX() > mo.getXPos() - MOUSE_AREA) &&
-                    (coord.getY() < mo.getYPos() + MOUSE_AREA && coord.getY() > mo.getYPos() - MOUSE_AREA)) {
-                Vektor2D aligment = new Vektor2D(coord.getX(),coord.getY());
+            if ((mouseCoord.getX() < mo.getXPos() + MOUSE_AREA && mouseCoord.getX() > mo.getXPos() - MOUSE_AREA) &&
+                    (mouseCoord.getY() < mo.getYPos() + MOUSE_AREA && mouseCoord.getY() > mo.getYPos() - MOUSE_AREA)) {
+                Vektor2D aligment = new Vektor2D(mouseCoord.getX(),mouseCoord.getY());
                 aligment.sub(mo.getPos());
                 aligment.mult(10);
                 mo.getVelocity().add(aligment);

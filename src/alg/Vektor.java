@@ -2,32 +2,7 @@ package alg;
 
 import exceptions.DoublesOutOfRangeException;
 import exceptions.NotInstanceOfException;
-//lange beschneiden auf bistimte länge 12 auf 10
-//länge hoch zwei, ohne sqrt um abstand zu vergleichen
-//klassen diagramm, entscheidung eklärrung, einpaar funktionen
-//In Euclidean space, a vector is a geometrical object that possesses both a magnitude and a velocity.
 
-/**
- * kminhc@gmail.com
- * Mein Klassendiagram sieht so aus:
- * Es gibt eine abstakte Klasse alg.Vektor, von der folgende Klassen abgeleitet werden: alg.Vektor2D, alg.Vektor3D
- * Ich habe mich für eine Oberklasse entschieden, weil es viele funktionen gibt, die für alle Vektoren belibiger Demension algemeingültig sind.
- * Es ist auch offensichtlich, dass jede abgeleitete von alg.Vektor Klasse , ein array aus Koordinaten hat (nach Demension unterschiedlich:
- * alg.Vektor2D : coords[2], alg.Vektor3D: coords[3] und so weiter) und (@member deltaFloatError ) ein Deltawert für den Floatvergleich hat.
- * Dank der Architektur kann man von der Klasse verschiedene Vektoren ableiten, die dann gleich alle benötigte Funktionen
- * zu verfügung haben.
- * <p>
- * Das ist möglich, da die Funktionen add, sub, mult, div, equals, notEquals, toString, isNullVektor, length, normalize, setPosition
- * algemeingültig definiert werden können.</p>
- * <p>
- * Die Funktionen add, sub, mult, div, abs, limit geben die Referenz auf sich selbst (this) zurück. Es ermöglicht
- * Method chaining an dem einem Objekt und macht solche ausdrücke möglich:
- * Vektor2D velocity = new Velocity2D(0,0);
- * velocity.add(alignment).add(cohesion).add(separation).mult(accsl);
- * die Scheibweise ist sehr verständlich zu lessen und intuitive zu schreiben
- * </p>
- *
- */
 abstract public class Vektor implements Cloneable {
 
     private double coords[];
@@ -185,10 +160,12 @@ abstract public class Vektor implements Cloneable {
     }
 
     public Vektor limit(double limit) throws IllegalArgumentException, DoublesOutOfRangeException {
+        //this.norm
+        //this.mult(limit);
         double length = length();
         if (limit <= 0 || length <= limit) return this;
 
-        double ratio = limit / length;
+        double ratio = divTwoDoubles(limit, length);
         mult(ratio);
         return this;
     }

@@ -27,9 +27,7 @@ public class LinAlg {
     }
 
     public static Vektor sub(Vektor v1, Vektor v2) throws DoublesOutOfRangeException, NotInstanceOfException {
-        Vektor result = v1.clone();
-        result.sub(v2);
-        return result;
+        return v1.clone().sub(v2);
     }
 
     public static Vektor sub(Vektor v1, Vektor... v2) throws DoublesOutOfRangeException, NotInstanceOfException {
@@ -119,7 +117,7 @@ public class LinAlg {
         System.out.println(v.toString());
     }
 
-    public static Vektor abs(Vektor v) throws DoublesOutOfRangeException {
+    public static Vektor abs(Vektor v) {
         Vektor result = v.clone();
         result.abs();
         return result;
