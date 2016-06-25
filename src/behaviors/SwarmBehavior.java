@@ -9,6 +9,11 @@ import objects.Swarm;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ *  A Class for calculating the behavior of separate {@link MovingObject},
+ *  while acting in a swarm.
+ */
+
 public class SwarmBehavior implements Behavior {
     public static final int NEIGHBORHOOD_DISTANCE = 300;
     public static final double WEIGHT_ALIGMENT = 0.08;//1/12;
@@ -16,6 +21,11 @@ public class SwarmBehavior implements Behavior {
     public static final double WEIGHT_SEPARATION = 0.04;
     MovingGroup swarm;
 
+    /**
+     *  Contructor for SwarmBehavior.
+     *
+     * @param swarm group of MovingObjects
+     */
     public SwarmBehavior(Swarm swarm) {
         this.swarm = swarm;
     }
@@ -25,6 +35,10 @@ public class SwarmBehavior implements Behavior {
         computeSwarmAcceleration();
     }
 
+    /**
+     * Method which calculates the acceleration for every {@link MovingObject} of a swarm, by multipying
+     * the alignment, cohesion and separation width a corresponding weight constant.
+     */
     private void computeSwarmAcceleration() {
         ArrayList<MovingObject> buffer = new ArrayList<>(swarm.getSwarmAgents());
 
@@ -43,6 +57,15 @@ public class SwarmBehavior implements Behavior {
         Collections.copy(swarm.getSwarmAgents(), buffer);
     }
 
+    /**
+     * Calculates the alignment of a {@link MovingObject}, by adding each velocity-vector
+     * of the neighbouring MovingObjects, dividing by
+     * the number of neighbours and normalizing the resulting vector.
+     *
+     * This method computes the data for the the alignment of the MovingObjects to the group of MovingObjects
+     * @param currentAgent swarmAgent for which the alignment should be calculated
+     * @return Alignmentvector as {@link Vektor2D}
+     */
     public Vektor2D computeAlignment(MovingObject currentAgent) {
         int neighborCount = 0;
         Vektor2D alignment = new Vektor2D();
@@ -64,6 +87,16 @@ public class SwarmBehavior implements Behavior {
     }
 
     //Mittelpunkt der Gruppe folgen
+
+    /**
+     * Calculates the cohesion of a {@link MovingObject}, by adding each positional-vector
+     * of the neighbouring MovingObjects , dividing by
+     * the number of neighbours, subtracting the position-vector of the {@code MovingObject currentAgent} you calculate the cohesion on and normalizing the resulting vector.
+     *
+     * This method computes the data for the MovingObjects to follow the center of a group of MovingObjects.
+     * @param currentAgent swarmAgent for which the cohesion should be calculated
+     * @return Cohesionvector as {@link Vektor2D}
+     */
     public Vektor2D computeCohesion(MovingObject currentAgent) {
         int neighborCount = 0;
         Vektor2D alignment = new Vektor2D();
@@ -86,6 +119,15 @@ public class SwarmBehavior implements Behavior {
 
     }
 
+    /**
+     *  Calculates the separation of a {@link MovingObject}, by adding each distance
+     * of the neighbouring MovingObjects to {@code MovingObject currentAgent}, dividing by
+     * the number of neighbours, multiplying by -1 and normalizing the resulting vector.
+     *
+     * This method computes the data for the the separation of the MovingObjects to the group of MovingObjects
+     * @param currentAgent swarmAgent for which the separation should be calculated
+     * @return Separationvector as {@link Vektor2D}
+     */
     public Vektor2D computeSeparation(MovingObject currentAgent) {
         int neighborCount = 0;
         Vektor2D alignment = new Vektor2D();
