@@ -4,14 +4,24 @@ import alg.Vektor2D;
 import lwjgl.MyWindow;
 import objects.MovingObject;
 
+/**
+ * Class defining a behavior where the {@link MovingObject} avoid the window borders.
+ */
 public class WallAvoidanceBehavior implements Behavior {
     MovingObject movingObject;
     double wallAvoidanceWeight = 0.2;
-
+    /**
+     * Constructor for FlummiBehavior
+     * @param movingObject The {@link MovingObject} which the behavior should be applied to
+     */
     public WallAvoidanceBehavior(MovingObject movingObject) {
         this.movingObject = movingObject;
     }
 
+    /**
+     * update method which lets the {@link MovingObject} go in the opposite direction of the window border
+     * if it goes near it.
+     */
     @Override
     public void updateState() {
         Vektor2D avoidanceVelocity = new Vektor2D(0,0);
