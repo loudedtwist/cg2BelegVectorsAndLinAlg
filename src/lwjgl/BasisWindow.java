@@ -203,8 +203,8 @@ abstract public class BasisWindow {
 
     public void loadShadersSource() {
         try {
-            vertexShaderSource = readFileAsString("/Users/warik/IdeaProjects/cg2BelegVersion2/shaders/shader.vert");
-            fragmentShaderSource = readFileAsString("/Users/warik/IdeaProjects/cg2BelegVersion2/shaders/shader.frag");
+            vertexShaderSource = readFileAsString("C:\\Develop\\projects\\cg2BelegVectorsAndLinAlg\\shaders\\shader.frag");
+            fragmentShaderSource = readFileAsString("C:\\Develop\\projects\\cg2BelegVectorsAndLinAlg\\shaders\\shader.vert");
         } catch (Exception e) {
             e.printStackTrace();
             exit(0);
