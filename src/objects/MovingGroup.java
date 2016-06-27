@@ -25,7 +25,7 @@ abstract public class MovingGroup extends MovingObject {
         return swarmAgents;
     }
 
-    static public boolean isNeighbor(MovingObject currentAgent, MovingObject agent ) {
+    static public boolean areNeighbors(MovingObject currentAgent, MovingObject agent ) {
         double distanceBetweenAgents = LinAlg.manhatDist(agent.getPos(), currentAgent.getPos());
         if (distanceBetweenAgents < SwarmBehavior.NEIGHBORHOOD_DISTANCE) {
             return true;

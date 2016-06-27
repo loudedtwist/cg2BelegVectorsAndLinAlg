@@ -1,4 +1,4 @@
-package framentLoops;
+package renderingLayers;
 
 import alg.Vektor2D;
 import com.sun.prism.paint.Color;
@@ -8,7 +8,7 @@ import objects.MovingObject;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class BackgoundLayer implements LayerLoop {
+public class BackgoundLayer implements ILoop {
     ArrayList<MovingObject> movObjects;
 
     public BackgoundLayer() {
@@ -43,7 +43,7 @@ public class BackgoundLayer implements LayerLoop {
     @Override
     public void loop() {
         for (MovingObject movObject : movObjects) {
-            movObject.callBehavior();
+            movObject.executeBehavior();
             movObject.render();
         }
     }

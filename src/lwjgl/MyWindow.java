@@ -1,9 +1,9 @@
 package lwjgl;
 
-import framentLoops.BackgoundLayer;
-import framentLoops.FirstLayerLoop;
-import framentLoops.LayerLoop;
-import framentLoops.SwarmLayerLoop;
+import renderingLayers.BackgoundLayer;
+import renderingLayers.RainLayerLoop;
+import renderingLayers.ILoop;
+import renderingLayers.SwarmLayer;
 
 public class MyWindow extends BasisWindow {
     static public int WINDOW_WIDTH = 640;
@@ -11,25 +11,24 @@ public class MyWindow extends BasisWindow {
 
     @Override
     public void insideLoop() {
-        for (LayerLoop layerLoop : layerLoops) {
-            layerLoop.loop();
+        for (ILoop iLoop : layerLoops) {
+            iLoop.loop();
         }
     }
 
     public MyWindow() {
         super(WINDOW_WIDTH, WINDOW_HEIGHT, "CG 2");
 
-        FirstLayerLoop firstLayerLoop = new FirstLayerLoop();
+        RainLayerLoop rainLayerLoop = new RainLayerLoop();
         BackgoundLayer backgoundLayer = new BackgoundLayer();
-        SwarmLayerLoop swarmLayerLoop = new SwarmLayerLoop(this);
-        //setLayerLoops(firstLayerLoop);
+        SwarmLayer swarmLayerLoop = new SwarmLayer(this);
         layerLoops.add(backgoundLayer);
         layerLoops.add(swarmLayerLoop);
+        //layerLoops.add(rainLayerLoop);
 
-        this.run();
     }
 
     public static void main(String[] args) {
-        MyWindow myWindow = new MyWindow();
+        new MyWindow().run();
     }
 }

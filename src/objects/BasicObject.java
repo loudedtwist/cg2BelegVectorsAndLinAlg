@@ -54,7 +54,7 @@ abstract public class BasicObject {
         this.behaviors = new ArrayList<>(5);
     }
 
-    public void callBehavior() {
+    public void executeBehavior() {
         for (Behavior behavior : behaviors) {
             behavior.updateState();
         }

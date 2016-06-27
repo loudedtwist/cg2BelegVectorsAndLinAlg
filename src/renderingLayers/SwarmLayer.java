@@ -1,4 +1,4 @@
-package framentLoops;
+package renderingLayers;
 
 import alg.Vektor2D;
 import behaviors.*;
@@ -17,7 +17,7 @@ import java.util.Random;
 
 import static org.lwjgl.glfw.GLFW.*;
 
-public class SwarmLayerLoop implements LayerLoop {
+public class SwarmLayer implements ILoop {
     public static final int MOUSE_AREA = 60;
     BasisWindow window;
     ArrayList<MovingGroup> swarms;
@@ -28,16 +28,19 @@ public class SwarmLayerLoop implements LayerLoop {
         return swarms;
     }
 
-    public SwarmLayerLoop(@NotNull final BasisWindow window) {
+    public SwarmLayer(@NotNull final BasisWindow window) {
         super();
         swarms = new ArrayList<>();
         this.window = window;
 
     }
 
+    public void addObjectToScene(MovingGroup swarm) {
+        swarms.add(swarm);
+    }
+
     @Override
     public void init() {
-
         leftButtonClickedMoving = new EscapeTheMouse(this);
         rightButtonClickedMoving = new AlignToTheMouseBehavior(this);
 
@@ -66,15 +69,11 @@ public class SwarmLayerLoop implements LayerLoop {
         addObjectToScene(swarm);
     }
 
-    public void addObjectToScene(MovingGroup swarm) {
-        swarms.add(swarm);
-    }
-
     @Override
     public void loop() {
         for (MovingGroup swarm : swarms) {
-            swarm.getSwarmAgents().forEach(MovingObject::callBehavior);
-            swarm.callBehavior();
+            swarm.getSwarmAgents().forEach(MovingObject::executeBehavior);
+            swarm.executeBehavior();
             swarm.render();
         }
 

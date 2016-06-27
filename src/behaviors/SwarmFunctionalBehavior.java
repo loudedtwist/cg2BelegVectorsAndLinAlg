@@ -52,7 +52,7 @@ public class SwarmFunctionalBehavior implements Behavior {
         swarm.getSwarmAgents()
                 .parallelStream()
                 .filter(agent -> agent != currentAgent)
-                .filter(agent -> MovingGroup.isNeighbor(currentAgent,agent))
+                .filter(agent -> MovingGroup.areNeighbors(currentAgent,agent))
                 .forEach(agent -> {
                         alignment.add(agent.getVelocity());
                         neighborCount.incrementAndGet();
@@ -72,7 +72,7 @@ public class SwarmFunctionalBehavior implements Behavior {
 
         for (MovingObject agent : swarm.getSwarmAgents()) {
             if (agent == currentAgent) continue;
-            if (MovingGroup.isNeighbor(currentAgent, agent)) {
+            if (MovingGroup.areNeighbors(currentAgent, agent)) {
                 alignment.add(agent.getPos());
                 neighborCount++;
             }
@@ -94,7 +94,7 @@ public class SwarmFunctionalBehavior implements Behavior {
 
         for (MovingObject agent : swarm.getSwarmAgents()) {
             if (agent == currentAgent) continue;
-            if (MovingGroup.isNeighbor(currentAgent, agent)) {
+            if (MovingGroup.areNeighbors(currentAgent, agent)) {
                 alignment.add(
                         LinAlg.sub(agent.getPos(), currentAgent.getPos())
                 );

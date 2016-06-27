@@ -1,23 +1,23 @@
 package behaviors;
 
 import alg.Vektor2D;
-import framentLoops.SwarmLayerLoop;
+import renderingLayers.SwarmLayer;
 import objects.MovingObject;
 
-import static framentLoops.SwarmLayerLoop.MOUSE_AREA;
+import static renderingLayers.SwarmLayer.MOUSE_AREA;
 
 /**
  * Class for the calculation of Swarm behavior, in context of mouse movement and clicks.
  * Aligning the swarm Objects to the mouse
  */
 public class AlignToTheMouseBehavior implements MouseListenerBehavior {
-    SwarmLayerLoop layerLoop;
+    SwarmLayer layerLoop;
 
     /**
      * Constructor for AlignToTheMouseBehavior
-     * @param layerLoop the {@link SwarmLayerLoop} with swarms of {@link MovingObject}s which the behavior should be used on.
+     * @param layerLoop the {@link SwarmLayer} with swarms of {@link MovingObject}s which the behavior should be used on.
      */
-    public AlignToTheMouseBehavior(SwarmLayerLoop layerLoop) {
+    public AlignToTheMouseBehavior(SwarmLayer layerLoop) {
         this.layerLoop = layerLoop;
     }
 
@@ -25,7 +25,7 @@ public class AlignToTheMouseBehavior implements MouseListenerBehavior {
      *Calculates the altering properties (like alignment, etc.) of MovingObjects while a mouse is present
      * in the window area and moved while clicked. This method aligns the swarm Objects to the mouse cursor, by multiplying
      * the alignment vector with a positive value.
-     * @param coord Coordinates of the mouse position as {@link Vektor2D}
+     * @param mouseCoord Coordinates of the mouse position as {@link Vektor2D}
      */
     @Override
     public void mouseMovingWithButtonPressed(Vektor2D mouseCoord) {

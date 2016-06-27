@@ -1,10 +1,10 @@
 package behaviors;
 
 import alg.Vektor2D;
-import framentLoops.SwarmLayerLoop;
+import renderingLayers.SwarmLayer;
 import objects.MovingObject;
 
-import static framentLoops.SwarmLayerLoop.MOUSE_AREA;
+import static renderingLayers.SwarmLayer.MOUSE_AREA;
 
 /**
  * Class for the calculation of Swarm behavior, in context of mouse movement and clicks.
@@ -12,13 +12,13 @@ import static framentLoops.SwarmLayerLoop.MOUSE_AREA;
  */
 
 public class EscapeTheMouse implements MouseListenerBehavior {
-    SwarmLayerLoop layerLoop;
+    SwarmLayer layerLoop;
 
     /**
      * Constructor for EscapeTheMouse behavior
-     * @param layerLoop the {@link SwarmLayerLoop} with swarms of {@link MovingObject}s which the behavior should be used on.
+     * @param layerLoop the {@link SwarmLayer} with swarms of {@link MovingObject}s which the behavior should be used on.
      */
-    public EscapeTheMouse(SwarmLayerLoop layerLoop) {
+    public EscapeTheMouse(SwarmLayer layerLoop) {
         this.layerLoop = layerLoop;
     }
 

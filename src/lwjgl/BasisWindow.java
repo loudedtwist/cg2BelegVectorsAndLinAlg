@@ -1,6 +1,6 @@
 package lwjgl;
 
-import framentLoops.LayerLoop;
+import renderingLayers.ILoop;
 import org.lwjgl.glfw.*;
 
 import java.io.BufferedReader;
@@ -23,7 +23,7 @@ abstract public class BasisWindow {
 
     private long windowHandle;
 
-    ArrayList<LayerLoop> layerLoops;
+    ArrayList<ILoop> layerLoops;
 
     private final String title;
 
@@ -116,8 +116,8 @@ abstract public class BasisWindow {
         loadShadersSource();
         initShaders();
 
-        for (LayerLoop layerLoop : layerLoops) {
-            layerLoop.init();
+        for (ILoop iLoop : layerLoops) {
+            iLoop.init();
         }
     }
 
@@ -203,8 +203,8 @@ abstract public class BasisWindow {
 
     public void loadShadersSource() {
         try {
-            vertexShaderSource = readFileAsString("C:\\Develop\\projects\\cg2BelegVectorsAndLinAlg\\shaders\\shader.frag");
-            fragmentShaderSource = readFileAsString("C:\\Develop\\projects\\cg2BelegVectorsAndLinAlg\\shaders\\shader.vert");
+            vertexShaderSource = readFileAsString("/Users/warik/IdeaProjects/cg2BelegVersion2/shaders/shader.vert");
+            fragmentShaderSource = readFileAsString("/Users/warik/IdeaProjects/cg2BelegVersion2/shaders/shader.frag");
         } catch (Exception e) {
             e.printStackTrace();
             exit(0);

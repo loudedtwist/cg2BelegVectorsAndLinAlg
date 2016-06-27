@@ -1,4 +1,4 @@
-package framentLoops;
+package renderingLayers;
 
 import alg.Vektor2D;
 import behaviors.Behavior;
@@ -12,11 +12,7 @@ import objects.MovingObject;
 import java.util.ArrayList;
 import java.util.Random;
 
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
-import static org.lwjgl.opengl.GL13.glMultiTexCoord2f;
-
-public class FirstLayerLoop implements LayerLoop {
+public class RainLayerLoop implements ILoop {
     ArrayList<MovingObject> movObjects;
 
 
@@ -24,7 +20,7 @@ public class FirstLayerLoop implements LayerLoop {
     Behavior wind;
     Behavior gravity;
 
-    public FirstLayerLoop() {
+    public RainLayerLoop() {
         movObjects = new ArrayList<>();
     }
 
@@ -39,7 +35,7 @@ public class FirstLayerLoop implements LayerLoop {
             Circle circle = new Circle(
                     new Vektor2D((0+i*(5+i*rand.nextFloat()))%640,(0+i*(i+5*rand.nextFloat()))%480),
                     rand.nextFloat(),
-                    (40)*rand.nextFloat(),
+                    (4)*rand.nextFloat(),
                     4.5f*rand.nextFloat(),
                     new Color(rand.nextFloat(),rand.nextFloat(),rand.nextFloat(),rand.nextFloat()));
             addMovingObject(circle);
@@ -49,7 +45,7 @@ public class FirstLayerLoop implements LayerLoop {
 
             circle.addBehavior(flummi);
             circle.addBehavior(gravity);
-            circle.addBehavior(wind);
+            //circle.addBehavior(wind);
         }
 
     }
@@ -62,7 +58,7 @@ public class FirstLayerLoop implements LayerLoop {
     @Override
     public void loop() {
         for (MovingObject movObject : movObjects) {
-            movObject.callBehavior();
+            movObject.executeBehavior();
             movObject.render();
         }
     }

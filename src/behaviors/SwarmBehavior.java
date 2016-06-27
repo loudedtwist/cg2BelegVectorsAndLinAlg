@@ -72,7 +72,7 @@ public class SwarmBehavior implements Behavior {
 
         for (MovingObject agent : swarm.getSwarmAgents()) {
             if (agent == currentAgent) continue;
-            if (MovingGroup.isNeighbor(currentAgent, agent)) {
+            if (MovingGroup.areNeighbors(currentAgent, agent)) {
                 alignment.add(agent.getVelocity());
                 neighborCount++;
             }
@@ -103,7 +103,7 @@ public class SwarmBehavior implements Behavior {
 
         for (MovingObject agent : swarm.getSwarmAgents()) {
             if (agent == currentAgent) continue;
-            if (MovingGroup.isNeighbor(currentAgent, agent)) {
+            if (MovingGroup.areNeighbors(currentAgent, agent)) {
                 alignment.add(agent.getPos());
                 neighborCount++;
             }
@@ -130,12 +130,12 @@ public class SwarmBehavior implements Behavior {
      */
     public Vektor2D computeSeparation(MovingObject currentAgent) {
         int neighborCount = 0;
-        Vektor2D alignment = new Vektor2D();
+        Vektor2D separation = new Vektor2D();
 
         for (MovingObject agent : swarm.getSwarmAgents()) {
             if (agent == currentAgent) continue;
-            if (MovingGroup.isNeighbor(currentAgent, agent)) {
-                alignment.add(
+            if (MovingGroup.areNeighbors(currentAgent, agent)) {
+                separation.add(
                         LinAlg.sub(agent.getPos(), currentAgent.getPos())
                 );
                 neighborCount++;
@@ -143,12 +143,12 @@ public class SwarmBehavior implements Behavior {
         }
 
         if (neighborCount == 0)
-            return alignment;
+            return separation;
 
-        alignment.div(neighborCount);
-        alignment.mult(-1);
-        alignment.normalize();
-        return alignment;
+        separation.div(neighborCount);
+        separation.mult(-1);
+        separation.normalize();
+        return separation;
     }
 
 }
